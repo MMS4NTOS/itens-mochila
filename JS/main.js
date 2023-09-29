@@ -38,9 +38,9 @@ formAdicionar.addEventListener("submit", (e) =>
 
     localStorage.setItem("itens", JSON.stringify(itens));
 
-   nome = "";
-   quantidade = "";
-   validade = "";
+   document.querySelector('#nome').value = "";
+   document.querySelector('#quantidade').value = "";
+   document.querySelector('#validade').value = "";
  })
 
 
@@ -101,11 +101,17 @@ function deletaElemento(tag, id) {
 
 function converteValidade(data) {
 
-    const validade = new Date(data.replace(/-/g, "/"));
+    if(data){
+      const validade = new Date(data.replace(/-/g, "/"));
 
-    let validadeConvertida =   `${validade.getDate()}/${validade.getMonth() + 1}/${validade.getFullYear()}`
-    ;
-    return validadeConvertida
+      let validadeConvertida = `${validade.getDate()}/${
+        validade.getMonth() + 1
+      }/${validade.getFullYear()}`;
+      return validadeConvertida;
+    }
+    else  
+        return 'Indeterminado'
+    
 }
 
 function verificaValidade(data) {

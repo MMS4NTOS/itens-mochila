@@ -1,20 +1,20 @@
 const formAdicionar = document.querySelector("#novoItem")
 const lista = document.querySelector("#lista");
+const listaItens = document.querySelectorAll("li")
 const itens = JSON.parse(localStorage.getItem("itens")) || []
 
-itens.forEach ( (elemento) => 
+itens.forEach ( (elemento) => {
     criaElemento(elemento)
-)
+  });
+    
 
 formAdicionar.addEventListener("submit", (e) =>
  {
-    console.log(botaoDeleta)
-    console.log(botaoDeleta())
-   e.preventDefault();
+    e.preventDefault();
 
    var nome = e.target.elements["nome"].value; // o target.elements referencia aos elementos do target do evento. Você especifica o elemento dentro de ['']
    var quantidade = e.target.elements["quantidade"].value;
-   var validade = e.target.elements["validade"].value;
+   var validade = converteValidade(e.target.elements["validade"].value)
 
    const existe = itens.find(elemento => elemento.nome === nome)
 
@@ -47,6 +47,9 @@ formAdicionar.addEventListener("submit", (e) =>
  function criaElemento(itemAtual) {
    const novoItem = document.createElement("li");
    novoItem.classList.add("item");
+   if (verificaValidade(itemAtual.validade)) {
+    novoItem.classList.add("vencido")
+   }
 
    const criaDiv = document.createElement('div')
    
@@ -64,8 +67,7 @@ formAdicionar.addEventListener("submit", (e) =>
    validadeItem.classList.add("validade")
    validadeItem.dataset.id = itemAtual.nome;
    validadeItem.innerHTML = `Validade: ${itemAtual.validade}`
-   
-   
+     
    novoItem.appendChild(criaDiv)
    novoItem.appendChild(validadeItem)
    novoItem.appendChild(botaoDeleta(itemAtual.id));
@@ -92,9 +94,26 @@ function botaoDeleta(id) {
 
 function deletaElemento(tag, id) {
   tag.remove()
-  console.log(itens)
   itens.splice(itens.findIndex(elemento => elemento.id === id), 1)
   localStorage.setItem("itens", JSON.stringify(itens));
 
+}
 
+function converteValidade(data) {
+
+    const validade = new Date(data.replace(/-/g, "/"));
+
+    let validadeConvertida =   `${validade.getDate()}/${validade.getMonth() + 1}/${validade.getFullYear()}`
+    ;
+    return validadeConvertida
+}
+
+function verificaValidade(data) {
+    const dataAtual = new Date();
+    const arrayData = data.split('/');
+    const dataConvertida = `${arrayData[1]}-${arrayData[0]}-${arrayData[2]}`;
+    const validade = new Date(dataConvertida);
+    
+
+    return dataAtual > validade
 }
